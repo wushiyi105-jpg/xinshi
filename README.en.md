@@ -52,6 +52,13 @@ python -m xinshi web --port 8770
 
 `data/mails-sample.json` ships four sample emails covering all four categories — add them and try.
 
+Run in Docker (the container uses the default port 8000):
+
+```bash
+docker build -t xinshi .
+docker run -p 8000:8000 xinshi
+```
+
 ## Command reference
 
 | Command | What it does |
@@ -65,6 +72,46 @@ python -m xinshi web --port 8770
 | `rm <id>` / `stats` / `web` | Delete (with drafts) / stats / web |
 
 Global flags: `--mock`, `--json`, `--model`, `--base-url`, `--api-key`, `--db`.
+
+## 🤔 Why not just ask a general LLM
+
+A general model reading an email can tell you "this one matters". Xinshi adds the three things it cannot:
+
+1. **To-dos must be traceable** — every extracted to-do and deadline must match a sentence in the original; if it cannot be found, it is dropped. Phrasings like "before 28 November" still match, and the date is never rewritten into whatever the model remembers.
+2. **Replies may not add numbers** — a draft containing amounts, deadlines or order numbers absent from the original is sent back for a rewrite and only a skeleton remains. Chat models love to promise "within 3 working days" inside a polite sentence.
+3. **Mail stays local** — no real mailbox is connected; you paste the text and triage, summaries and drafts are stored in local SQLite. It never logs in for you or sends for you.
+4. **Structured output** — category (important/to-do/notice/spam), priority, summary, to-dos and draft are fixed fields you can queue; a chat judgement is one paragraph with no ordering.
+
+## 🎯 Use cases
+
+- **Sorting the inbox in the morning**: paste a few key messages, see which are to-dos and which are notices, and stop prioritising by feel.
+- **Extracting to-dos from a meeting invite**: time, place and materials to prepare are mixed into a long message; extract each one and verify it against the source so nothing is missed.
+- **Drafting a client reply first**: pick a tone (formal/concise/friendly), get a draft, confirm no extra promises, then send it yourself.
+
+## 🗺 Roadmap
+
+- **Batch triage**: paste three messages at once and get one triage table instead of one at a time.
+- **Reply log**: record whether a message was answered and which draft was used, avoiding double replies.
+- **To-do export**: write extracted to-dos to CSV or `.ics` for a task tool or calendar.
+- **Template library**: skeletons for refunds, delays and reminders, applied by tone.
+- **Mixed-language mail**: classify and extract correctly from Chinese-English messages.
+
+## ❓ FAQ
+
+**Where do I get an API key?**
+The project ships without one. It talks to DeepSeek (`https://api.deepseek.com`) by default — set `LLM_API_KEY`. Any OpenAI-compatible endpoint works.
+
+**Where is data stored, and does it connect to my mailbox?**
+It does not connect. You paste the text and it is stored in local SQLite; the tool has no inbox permission and never sends on your behalf.
+
+**Does it work without a key?**
+Triage works: keyword rules classify important/to-do/notice/spam and the summary is the first sentence truncated; reply drafts are skeletons without model polish.
+
+**How do I switch models?**
+Change `LLM_BASE_URL`, `LLM_MODEL` and `LLM_API_KEY`, or override with `--model`.
+
+**Can it misclassify an important email as spam?**
+It can, so every classification lists the keywords it hit; seeing the reason lets you override. Spam requires at least two signals, which reduces false kills.
 
 ## How it works
 
