@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xinshi"
+version = "0.1.0"
+description = "邮件分类、摘要、回信草稿、语气调整"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+[project.scripts]
+xinshi = "xinshi.cli:main"
+
+[tool.setuptools]
+packages = ["xinshi"]
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
