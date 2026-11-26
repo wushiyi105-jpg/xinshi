@@ -157,6 +157,6 @@ xinshi/
 
 ## Author
 
-shiyi · GitHub [@wushiyi105-jpg](https://github.com/wushiyi105-jpg) · wushiyi105@gmail.com
+Xiao Mi · 17612850106
 
 MIT License, Copyright (c) 2026 wushiyi105-jpg
