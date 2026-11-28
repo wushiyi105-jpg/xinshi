@@ -12,7 +12,7 @@ from .db import Database
 
 PAGE = """<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>信使 · 邮件助手</title>
+<title>信使 · 谁还在等我回邮件</title>
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--ink:#1d2229;--dim:#6c7681;--accent:#38506b;--line:#e0e5ea}
 *{box-sizing:border-box}
@@ -32,11 +32,76 @@ button:disabled{opacity:.55;cursor:wait}
 .out{white-space:pre-wrap;font:14px/1.8 Consolas,"Microsoft YaHei",monospace;background:#fbfcfd;border:1px solid var(--line);border-radius:8px;padding:14px;margin-top:12px;min-height:40px}
 .row{display:flex;gap:10px}.row>*{flex:1}
 .list div{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px;display:flex;gap:10px}
+
+:root{--maxw:960px;--bg:#f3f1e8;--card:#fffef9;--ink:#1d2a3a;--text:#1d2a3a;--dim:#68707a;--line:#d4d1c2;--accent:#1f4d7a;--muted:#68707a}
+.wrap{max-width:960px}
+body{background:#f3f1e8;color:#1d2a3a;font-family:"Songti SC","SimSun",Georgia,serif}
+h1{color:#1d2a3a}
+header{max-width:960px;margin:0 auto}
+input,textarea,select{background:#fff;color:#1d2a3a;border-color:#d4d1c2;border-radius:2px}
+button:not(.ghost):not(.tab){background:#1f4d7a;color:#fff;border-radius:2px}
+button.ghost{background:transparent!important;color:#1f4d7a!important;border:1px solid #d4d1c2!important}
+h2,h3{color:#1f4d7a}
+pre{background:#fafaf6;color:#1d2a3a;border-color:#d4d1c2}
+.item,.card{border-color:#d4d1c2;background:#fffef9}
+.k,.empty,.hint{color:#68707a}
+
+h1{font-size:clamp(31px,5vw,39px);line-height:1.26}
+.prod{display:block;font-size:11px;line-height:1.4;letter-spacing:.18em;font-weight:650;margin-bottom:8px;opacity:.72}
+.lede,.sub{max-width:62ch;line-height:1.75}
+.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:16px auto 20px;border:1px solid var(--line);background:var(--line);max-width:var(--maxw)}
+.route span{padding:11px 13px;background:var(--card);font-size:12px;line-height:1.5}
+.route b{display:block;font-size:10px;letter-spacing:.1em;margin-bottom:3px;opacity:.66}
+button{min-height:46px}
+input,select{min-height:44px}
+pre{white-space:pre-wrap}
+@media(max-width:680px){
+  .wrap{padding:20px 16px 56px}
+  .route{grid-template-columns:1fr}
+  h1{font-size:30px!important}
+  .row>div{min-width:100%!important}
+  button{width:100%}
+}
+
+body{background:#f3f1e8;color:#1d2a3a}
+h1{font-size:38px;line-height:1.25;color:#1d2a3a}
+.sub{color:#68707a;font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-size:14px}
+.tabs{margin:16px 0}
+.tab{border:1px solid #d4d1c2;border-radius:0;background:#fffef9;color:#68707a;padding:9px 16px}
+.tab.on{background:#1f4d7a;color:#fff;border-color:#1f4d7a}
+.card{background:#fffef9;border:1px solid #d4d1c2;border-left:5px solid #1f4d7a;border-radius:0;box-shadow:none}
+button{background:#1f4d7a;color:#fff;border-radius:0;letter-spacing:.04em}
+button:hover{background:#193e63}
+input,textarea,select{background:#fff;border-color:#d0cdbf;border-radius:0;color:#1d2a3a}
+input:focus,textarea:focus,select:focus{border-color:#1f4d7a;box-shadow:0 0 0 2px #d8e2ec}
+.out{background:#fff8d8;border-color:#e3d28d;color:#1d2a3a;border-radius:0}
+.list{border-color:#d4d1c2}
+h2{color:#1f4d7a}
+
+
+/* mobile-32 */
+
+@media(max-width:760px){
+  main{grid-template-columns:1fr!important}
+  aside{border-right:0!important;border-bottom:1px solid #d4d1c2;width:auto!important}
+  section{padding:16px!important}
+  .row{flex-wrap:wrap!important}
+  .row>div{min-width:100%!important}
+  h1{font-size:30px!important}
+  .route{grid-template-columns:1fr!important}
+  button{min-height:48px}
+  pre{overflow-x:auto}
+}
+
+/* mobile-height */
+@media(max-width:760px){main{min-height:auto!important}aside{min-height:0!important}}
 </style></head><body><div class="wrap">
-<h1>信使 <span id="st" class="badge"></span></h1>
-<p class="sub">不接真实邮箱:你粘贴文本,它给分类、摘要、待办和回信草稿,发信仍然你自己发。</p>
+<h1><span class="prod">信使</span>谁还在等我回邮件 <span id="st" class="badge"></span></h1>
+<p class="sub">给管合作邮件的人：导入选中的邮件线程，识别对方问了什么、我承诺了什么、谁在等谁，生成保留原事实的回复草稿。</p>
 <div class="tabs"><div class="tab on" data-t="in">收件</div><div class="tab" data-t="out">回信</div></div>
 
+
+  <div class="route" aria-label="任务步骤"><span><b>01</b>选邮件线程</span><span><b>02</b>找承诺与等待</span><span><b>03</b>起回复草稿</span></div>
 <div class="card" id="p-in">
   <label>主题</label><input id="mSub">
   <label>发件人</label><input id="mFrom">
